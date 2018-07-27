@@ -3,9 +3,6 @@
   <div class="card-panel grey lighten-3">
     <h5>Are you new? Please fill your information here</h5>
     <div class="input-field">
-      <input type="text" placeholder="Name" v-model="name">
-    </div>
-    <div class="input-field">
       <input type="text" placeholder="Email" v-model="email">
     </div>
     <div class="row">
@@ -15,7 +12,7 @@
       </div>
     </div>
     <br>
-    <input type="submit" value="Submit" class="btn lime" @click="submit">
+    <input type="submit" value="Login" class="btn lime" @click="submit">
   </div>
 </div>
 </template>
@@ -24,19 +21,16 @@
 export default {
   name: 'Signup',
   data: () => ({
-    name: '',
-    password: '',
-    email: ''
+    email: '',
+    password: ''
   }),
   methods: {
     submit () {
       console.log('dddd')
-      this.$store.dispatch('addUser', {
-        name: this.name,
+      this.$store.dispatch('login', {
         password: this.password,
         email: this.email
       })
-      this.$emit('move', 'login')
     }
   }
 }

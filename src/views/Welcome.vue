@@ -1,30 +1,76 @@
 <template>
 <div class="body">
-  <Navbar/>
-  <ListContent/>
-  <Footer/>
+  <Navbar @move="move"/>
+  <Login v-if="login && !token"/>
+  <Signup @move="move" v-if="signup && !token"/>
+  <Table v-if="token"/>
+  <footer class="page-footer #cddc39 lime footerFixed">
+    <FooterLogin/>
+    <Footer/>
+  </footer>
 </div>
 </template>
 
-
-
 <script>
 import Navbar from '@/components/Navbar.vue'
-import ListContent from '@/components/ListContent.vue'
+import Signup from '@/components/Signup.vue'
 import Footer from '@/components/Footer.vue'
+import FooterLogin from '@/components/FooterLogin.vue'
+import Login from '@/components/Login.vue'
+import Table from '@/components/Table.vue'
+import {
+  mapActions,
+  mapState
+} from 'vuex'
 
 export default {
   name: 'Welcome',
-  components:{
+  data: () => ({
+    login: true,
+    signup: false,
+    table: false
+  }),
+  components: {
     Navbar,
-    ListContent,
-    Footer
+    Signup,
+    Footer,
+    FooterLogin,
+    Login,
+    Table
+  },
+  computed: {
+    ...mapState(['token', 'data'])
+  },
+  methods: {
+    ...mapActions(['get_token', 'get_data']),
+    move (to) {
+      switch (to) {
+        case 'login':
+          this.login = true
+          this.signup = false
+          this.table = false
+          break
+        case 'signup':
+          this.login = false
+          this.signup = true
+          this.table = false
+          break
+        case 'table':
+          this.login = false
+          this.signup = false
+          this.table = true
+          break
+        default:
+          this.login = false
+          this.signup = false
+          this.table = false
+      }
+    }
   }
 }
 </script>
 
 <style scoped>
-
 #wellcome {
   text-align: center;
 }

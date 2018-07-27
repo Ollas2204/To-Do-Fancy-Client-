@@ -5,11 +5,9 @@ import Welcome from './views/Welcome.vue'
 Vue.use(Router)
 
 export default new Router({
-  routes: [
-    {
-      path: '/',
-      name: 'Welcome',
-      component: Welcome
-    }
-  ]
+  routes: [{
+    path: '/',
+    name: 'Welcome',
+    component: Welcome
+  }]
 })
