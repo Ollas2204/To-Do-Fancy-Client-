@@ -26,7 +26,7 @@ export default {
   }),
   methods: {
     submit () {
-      console.log('dddd')
+      if(this.password == '' || this.email == '') return null
       this.$store.dispatch('login', {
         password: this.password,
         email: this.email

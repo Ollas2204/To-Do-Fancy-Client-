@@ -3,7 +3,7 @@
   <Navbar @move="move"/>
   <Login v-if="login && !token"/>
   <Signup @move="move" v-if="signup && !token"/>
-  <Table v-if="token"/>
+  <Table :data="data" :token="token" v-if="token"/>
   <footer class="page-footer #cddc39 lime footerFixed">
     <FooterLogin/>
     <Footer/>

@@ -1,56 +1,49 @@
 <template>
-<div>
-  <md-table v-model="people" md-card @md-selected="onSelect">
-    <md-table-row slot="md-table-row" slot-scope="{ item }" :class="getClass(item)" md-selectable="single">
-      <md-table-cell md-label="ID" md-sort-by="id" md-numeric>{{ item.id }}</md-table-cell>
-      <md-table-cell md-label="Name" md-sort-by="name">{{ item.name }}</md-table-cell>
-      <md-table-cell md-label="Email" md-sort-by="email">{{ item.email }}</md-table-cell>
-      <md-table-cell md-label="Gender" md-sort-by="gender">{{ item.gender }}</md-table-cell>
-      <md-table-cell md-label="Job Title" md-sort-by="title">{{ item.title }}</md-table-cell>
-    </md-table-row>
-  </md-table>
-
-  <p>Selected:</p>
-  {{ selected }}
+<div class="column">
+    <md-table v-model="data" md-card @md-selected="onSelect">
+      <md-table-row slot="md-table-row" slot-scope="{ item }" :class="getClass(item)" md-selectable="single">
+        <md-table-cell md-label="ID" md-sort-by="id" md-numeric>{{ item.no }}</md-table-cell>
+        <md-table-cell md-label="Description" md-sort-by="name">{{ item.content }}</md-table-cell>
+        <md-table-cell md-label="Created At" md-sort-by="name">{{ JSON.stringify(item.forDate )}}</md-table-cell>
+        <md-table-cell md-label="Checklist" md-sort-by="email">{{ item.checklist? 'Done' : 'Pending' }}</md-table-cell>
+      </md-table-row>
+    </md-table>
+    <div id="modal2" class="modal">
+      <div class="modal-content Light-pink">
+        <label>Description : </label>
+        <h5>{{ selected.content }}</h5>
+        <label>Date</label>
+        <h5>{{ JSON.stringify(selected.forDate) }}</h5>
+      </div>
+      <div class="modal-footer">
+        <a class="modal-action modal-close waves-effect waves-Pink btn-flat">Cancel</a>
+        <a class="modal-action modal-close waves-effect waves-Pink btn-flat" @click='onDestroy(selected._id)'>Delete</a>
+        <a class="modal-action modal-close waves-effect waves-Pink btn-flat" @click='onMove(selected)'>{{ selected.checklist?  'move to pending' : 'move to done' }}</a>
+      </div>
+    </div>
 </div>
 </template>
 
 <script>
+
+import {
+  mapActions,
+  mapState
+} from 'vuex'
+
 export default {
+  props: ['data','token'],
   name: 'TableSingle',
   data: () => ({
     selected: {},
-    people: [{
-      id: 1,
-      name: 'Shawna Dubbin',
-      email: 'sdubbin0@geocities.com',
-      gender: 'Male',
-      title: 'Assistant Media Planner'
-    },
-    {
-      id: 2,
-      name: 'Odette Demageard',
-      email: 'odemageard1@spotify.com',
-      gender: 'Female',
-      title: 'Account Coordinator'
-    },
-    {
-      id: 3,
-      name: 'Lonnie Izkovitz',
-      email: 'lizkovitz3@youtu.be',
-      gender: 'Female',
-      title: 'Operator'
-    },
-    {
-      id: 4,
-      name: 'Thatcher Stave',
-      email: 'tstave4@reference.com',
-      gender: 'Male',
-      title: 'Software Test Engineer III'
-    }
-    ]
   }),
+  created(){
+    this.get_data({
+      token: this.token
+    })
+  },
   methods: {
+    ...mapActions(['get_token', 'get_data','move_status', 'destroy']),
     getClass: ({
       id
     }) => ({
@@ -59,12 +52,36 @@ export default {
     }),
     onSelect (item) {
       this.selected = item
+      $('#modal2').openModal()
+    },
+    onMove(selected){
+      let self = this
+      this.move_status({
+        id: selected._id,
+        checklist: !selected.checklist,
+        token: this.token
+      }).then(()=>{
+        self.get_data({
+          token: self.token
+        })
+      })
+    },
+    onDestroy(id){
+      let self = this
+      this.destroy({
+        id: this.selected._id,
+        token: this.token
+      }).then(()=>{
+        self.get_data({
+          token: self.token
+        })
+      })
     }
   }
 }
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .md-table + .md-table {
     margin-top: 16px;
 }
