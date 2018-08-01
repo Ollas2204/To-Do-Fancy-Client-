@@ -26,7 +26,7 @@ export default {
   }),
   methods: {
     submit () {
-      if(this.password == '' || this.email == '') return null
+      if (this.password === '' || this.email === '') return alert('password and email empty')
       this.$store.dispatch('login', {
         password: this.password,
         email: this.email

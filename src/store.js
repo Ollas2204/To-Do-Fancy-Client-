@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
 Vue.use(Vuex)
-var base_url = 'http://localhost:3000'
+var BASEURL = 'http://localhost:3000'
 export default new Vuex.Store({
   state: {
     token: localStorage.getItem('token'),
@@ -13,8 +13,8 @@ export default new Vuex.Store({
       state.token = payload
     },
     set_data: function (state, payload) {
-      state.data = payload.map((e,i)=>{
-        e.no = i+1
+      state.data = payload.map((e, i) => {
+        e.no = i + 1
         return e
       })
     },
@@ -22,23 +22,23 @@ export default new Vuex.Store({
       state.data.push(payload.todo)
     },
     search: function (state, payload) {
-      state.data = state.data.filter(e=>{
+      state.data = state.data.filter(e => {
         return new RegExp(payload).test(e.content)
       })
     },
-    edit_data : function (state, payload) {
-      state.data = state.data.map(e=>{
-        if(e._id==payload._id){
-          e=payload
+    edit_data: function (state, payload) {
+      state.data = state.data.map(e => {
+        if (e._id === payload._id) {
+          e = payload
         }
         return e
       })
     },
-    delete_data : function (state, payload) {
-      state.data = state.data.filter(e=>{
-        return e._id==payload
+    delete_data: function (state, payload) {
+      state.data = state.data.filter(e => {
+        return e._id === payload
       })
-    },
+    }
   },
   actions: {
     get_token: function ({
@@ -47,19 +47,34 @@ export default new Vuex.Store({
       commit('set_token', payload)
     },
     login: function ({ commit }, payload) {
-      axios.post(`${base_url}/users/login`, {
+      axios.post(`${BASEURL}/users/login`, {
         email: payload.email,
         password: payload.password
       })
         .then(({data}) => {
-          console.log(data)
-          localStorage.setItem('token',data.token)
+          if (data.token) {
+            localStorage.setItem('token', data.token)
+            commit('set_token', data.token)
+          } else {
+            alert('data tidak ada')
+          }
+        })
+        .catch(err => alert(JSON.stringify(err)))
+    },
+    login_fb: function ({ commit }, payload) {
+      axios.post(`${BASEURL}/users/login_fb`, {
+        email: payload.email,
+        name: payload.name,
+        id: payload.id
+      })
+        .then(({data}) => {
+          localStorage.setItem('token', data.token)
           commit('set_token', data.token)
         })
-        .catch(console.log)
+        .catch(err => alert(JSON.stringify(err)))
     },
     addUser: function ({ commit }, payload) {
-      axios.post(`${base_url}/users/addUser`, {
+      axios.post(`${BASEURL}/users/addUser`, {
         email: payload.email,
         password: payload.password,
         name: payload.name
@@ -67,12 +82,12 @@ export default new Vuex.Store({
         .then(({data}) => {
           console.log(data)
         })
-        .catch(console.log)
+        .catch(err => alert(JSON.stringify(err)))
     },
     get_data: function ({
       commit
     }, payload) {
-      axios.get(`${base_url}/todos/findByUser`, {
+      axios.get(`${BASEURL}/todos/findByUser`, {
         headers: {
           token: payload.token
         }
@@ -80,29 +95,30 @@ export default new Vuex.Store({
         .then(({data}) => {
           commit('set_data', data)
         })
-        .catch(console.log)
+        .catch(err => alert(JSON.stringify(err)))
     },
     create_data: function ({
       commit
     }, payload) {
-      axios.post(`${base_url}/todos/createTodo`,{
+      axios.post(`${BASEURL}/todos/createTodo`, {
         content: payload.content,
         forDate: payload.forDate,
+        weather: payload.weather
       }, {
         headers: {
           token: payload.token
         }
       })
         .then(({data}) => {
-          console.log('data');
+          console.log('data')
           commit('push_data', data)
         })
-        .catch(console.log)
+        .catch(err => alert(JSON.stringify(err)))
     },
     move_status: function ({
       commit
     }, payload) {
-      axios.put(`${base_url}/todos/updateCheckList/${payload.id}`,{
+      axios.put(`${BASEURL}/todos/updateCheckList/${payload.id}`, {
         checklist: payload.checklist
       }, {
         headers: {
@@ -112,12 +128,12 @@ export default new Vuex.Store({
         .then(({data}) => {
           commit('edit_data', data.todo)
         })
-        .catch(console.log)
+        .catch(err => alert(JSON.stringify(err)))
     },
     destroy: function ({
       commit
     }, payload) {
-      axios.delete(`${base_url}/todos/deleteTodo/${payload.id}`, {
+      axios.delete(`${BASEURL}/todos/deleteTodo/${payload.id}`, {
         headers: {
           token: payload.token
         }
@@ -125,7 +141,7 @@ export default new Vuex.Store({
         .then(({data}) => {
           commit('delete_data', payload.id)
         })
-        .catch(console.log)
+        .catch(err => alert(JSON.stringify(err)))
     }
   }
 })

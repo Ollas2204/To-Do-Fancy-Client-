@@ -5,6 +5,8 @@ import Welcome from './views/Welcome.vue'
 Vue.use(Router)
 
 export default new Router({
+  mode: 'history',
+  history: true,
   routes: [{
     path: '/',
     name: 'Welcome',

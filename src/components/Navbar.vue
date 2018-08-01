@@ -5,7 +5,7 @@
       <ul class="right hide-on-med-and-down">
         <li><a @click="move('login')" v-if="!token">LOGIN</a></li>
         <li><a @click="move('signup')" v-if="!token">SIGNUP</a></li>
-        <li v-if="token"><input type="text" class="white-text" placeholder="search" v-model="search"></li>
+        <li v-if="token"><input type="white-text" placeholder="Find Me If You Can " v-model="search"></li>
         <li><a @click="logout()" v-if="token">LOGOUT</a></li>
         <li><a @click="menu"><i class="material-icons" v-if="token">create</i></a></li>
       </ul>
@@ -16,7 +16,8 @@
         <input type="text" v-model="content" name="Description">
         <label>Select date</label>
         <input type="date" v-model="forDate" name="Description">
-        <label><a href="https://www.google.co.id/search?rlz=1C5CHFA_enID781JP782&ei=OVRbW_-MBc3i-AavjqSADg&q=weather+now&oq=weather&gs_l=psy-ab.1.1.0i71k1l8.0.0.0.9587.0.0.0.0.0.0.0.0..0.0....0...1c..64.psy-ab..0.0.0....0.ubOlZVlHTOk"></a>Weather today</label>
+        <label>Weather today</label>
+        <input disabled type="text" v-model="weather" name="Description">
       </div>
       <div class="modal-footer">
         <a href="#" class="modal-action modal-close waves-effect waves-Pink btn-flat" @click='submit()'>⛩️ Add New Task</a>
@@ -30,30 +31,41 @@ import {
   mapActions,
   mapState
 } from 'vuex'
-
+import axios from 'axios'
+let URL_API_YAHOO = 'https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20weather.forecast%20where%20woeid%20in%20(select%20woeid%20from%20geo.places(1)%20where%20text%3D%22jakarta%2Ccn%22)%20and%20u%3D%22c%22&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys'
 export default {
   name: 'Navbar',
-  data: ()=>({
-    content: "",
-    forDate: "",
-    search: ""
+  data: () => ({
+    content: '',
+    forDate: '',
+    search: '',
+    weather: ''
   }),
   computed: {
     ...mapState(['token', 'data'])
   },
-  watch:{
+  watch: {
     search: function (item) {
-      if(item != ''){
+      if (item !== '') {
         this.$store.commit('search', item)
-      }else{
+      } else {
         this.get_data({
           token: this.token
         })
       }
     }
   },
+  created(){
+    let self = this
+    axios.get(URL_API_YAHOO)
+      .then(({data})=>{
+        let item = data.query.results.channel.item
+        self.weather = item.condition.temp + ' Celcius ' + item.condition.text
+      })
+      .catch(console.log)
+  },
   methods: {
-    ...mapActions(['get_token', 'create_data', 'get_data',]),
+    ...mapActions(['get_token', 'create_data', 'get_data']),
     menu () {
       $('#modal1').openModal()
     },
@@ -62,7 +74,10 @@ export default {
     },
     logout () {
       this.move('login')
-      localStorage.removeItem('token')
+      FB.logout(function(params) {
+        return null
+      })
+      localStorage.clear()
       this.$store.dispatch('get_token', null)
     },
     submit () {
@@ -70,13 +85,14 @@ export default {
       this.create_data({
         token: this.token,
         content: this.content,
-        forDate: this.forDate
+        forDate: this.forDate,
+        weather: this.weather
       })
-      .then(()=>{
-        self.get_data({
-          token: this.token
+        .then(() => {
+          self.get_data({
+            token: this.token
+          })
         })
-      })
     }
   }
 }

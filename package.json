@@ -12,6 +12,7 @@
     "materialize-css": "^1.0.0-rc.2",
     "materialize-social": "^1.0.3",
     "vue": "^2.5.16",
+    "vue-facebook-signin-button": "^1.0.1",
     "vue-goodshare": "^0.9.3",
     "vue-material": "^1.0.0-beta-10.2",
     "vue-router": "^3.0.1",

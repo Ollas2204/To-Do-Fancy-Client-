@@ -5,7 +5,7 @@
   <Signup @move="move" v-if="signup && !token"/>
   <Table :data="data" :token="token" v-if="token"/>
   <footer class="page-footer #cddc39 lime footerFixed">
-    <FooterLogin/>
+    <FooterLogin v-if="login && !token"/>
     <Footer/>
   </footer>
 </div>

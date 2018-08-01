@@ -27,23 +27,22 @@
 <script>
 
 import {
-  mapActions,
-  mapState
+  mapActions
 } from 'vuex'
 
 export default {
-  props: ['data','token'],
+  props: ['data', 'token'],
   name: 'TableSingle',
   data: () => ({
-    selected: {},
+    selected: {}
   }),
-  created(){
+  created () {
     this.get_data({
       token: this.token
     })
   },
   methods: {
-    ...mapActions(['get_token', 'get_data','move_status', 'destroy']),
+    ...mapActions(['get_token', 'get_data', 'move_status', 'destroy']),
     getClass: ({
       id
     }) => ({
@@ -54,24 +53,24 @@ export default {
       this.selected = item
       $('#modal2').openModal()
     },
-    onMove(selected){
+    onMove (selected) {
       let self = this
       this.move_status({
         id: selected._id,
         checklist: !selected.checklist,
         token: this.token
-      }).then(()=>{
+      }).then(() => {
         self.get_data({
           token: self.token
         })
       })
     },
-    onDestroy(id){
+    onDestroy (id) {
       let self = this
       this.destroy({
         id: this.selected._id,
         token: this.token
-      }).then(()=>{
+      }).then(() => {
         self.get_data({
           token: self.token
         })
