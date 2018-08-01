@@ -1,6 +1,6 @@
 window.fbAsyncInit = function () {
   FB.init({
-    appId: '1530275277041978', // localhost : 1239370809540745 225274774708793
+    appId: '254975278627837', // localhost : 1239370809540745 225274774708793
     cookie: true, // enable cookies to allow the server to access
     // the session
     xfbml: true, // parse social plugins on this page

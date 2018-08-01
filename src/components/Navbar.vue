@@ -20,6 +20,7 @@
         <input disabled type="text" v-model="weather" name="Description">
       </div>
       <div class="modal-footer">
+        <a href="#" class="modal-action modal-close waves-effect waves-Pink btn-flat" @click='hide()'>⛩️ Cancel</a>
         <a href="#" class="modal-action modal-close waves-effect waves-Pink btn-flat" @click='submit()'>⛩️ Add New Task</a>
       </div>
     </div>
@@ -69,6 +70,9 @@ export default {
     menu () {
       $('#modal1').openModal()
     },
+    hide (){
+      $('#modal1').closeModal()
+    },
     move (to) {
       this.$emit('move', to)
     },
@@ -93,6 +97,8 @@ export default {
             token: this.token
           })
         })
+        this.content=''
+        this.forDate=''
     }
   }
 }

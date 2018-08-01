@@ -6,6 +6,7 @@
         <md-table-cell md-label="Description" md-sort-by="name">{{ item.content }}</md-table-cell>
         <md-table-cell md-label="Created At" md-sort-by="name">{{ JSON.stringify(item.forDate )}}</md-table-cell>
         <md-table-cell md-label="Checklist" md-sort-by="email">{{ item.checklist? 'Done' : 'Pending' }}</md-table-cell>
+        <md-table-cell md-label="Today Weather's" md-sort-by="email">{{ item.weather}}</md-table-cell>
       </md-table-row>
     </md-table>
     <div id="modal2" class="modal">

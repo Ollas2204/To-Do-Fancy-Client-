@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
 Vue.use(Vuex)
-var BASEURL = 'http://localhost:3000'
+var BASEURL = 'https://35.240.138.46:3005'
 export default new Vuex.Store({
   state: {
     token: localStorage.getItem('token'),
@@ -50,6 +50,10 @@ export default new Vuex.Store({
       axios.post(`${BASEURL}/users/login`, {
         email: payload.email,
         password: payload.password
+      },{
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
       })
         .then(({data}) => {
           if (data.token) {
@@ -66,6 +70,10 @@ export default new Vuex.Store({
         email: payload.email,
         name: payload.name,
         id: payload.id
+      },{
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
       })
         .then(({data}) => {
           localStorage.setItem('token', data.token)
@@ -78,6 +86,10 @@ export default new Vuex.Store({
         email: payload.email,
         password: payload.password,
         name: payload.name
+      },{
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
       })
         .then(({data}) => {
           console.log(data)
@@ -90,6 +102,10 @@ export default new Vuex.Store({
       axios.get(`${BASEURL}/todos/findByUser`, {
         headers: {
           token: payload.token
+        }
+      },{
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
         }
       })
         .then(({data}) => {
@@ -122,7 +138,8 @@ export default new Vuex.Store({
         checklist: payload.checklist
       }, {
         headers: {
-          token: payload.token
+          token: payload.token,
+          'Content-Type': 'application/x-www-form-urlencoded'
         }
       })
         .then(({data}) => {
@@ -135,7 +152,8 @@ export default new Vuex.Store({
     }, payload) {
       axios.delete(`${BASEURL}/todos/deleteTodo/${payload.id}`, {
         headers: {
-          token: payload.token
+          token: payload.token,
+          'Content-Type': 'application/x-www-form-urlencoded'
         }
       })
         .then(({data}) => {
