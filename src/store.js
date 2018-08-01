@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
 Vue.use(Vuex)
-var BASEURL = 'http://35.240.209.23 '
+var BASEURL = 'http://localhost:3000'
 export default new Vuex.Store({
   state: {
     token: localStorage.getItem('token'),
@@ -47,26 +47,30 @@ export default new Vuex.Store({
       commit('set_token', payload)
     },
     login: function ({ commit }, payload) {
-      axios.post(`${BASEURL}/users/login`, {
-        email: payload.email,
-        password: payload.password
-      },{
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
+      console.log('ke hit');
+
+      axios({
+        method: 'post',
+        url: `http://localhost:3000/users/login`,
+        data: {
+          email: payload.email,
+          password: payload.password
         }
-      })
-        .then(({data}) => {
-          if (data.token) {
-            localStorage.setItem('token', data.token)
-            commit('set_token', data.token)
+      }).then(response => {
+          console.log(response, 'response====');
+          if (response.data.token) {
+            localStorage.setItem('token', response.data.token)
+            commit('set_token', response.data.token)
           } else {
             alert('data tidak ada')
           }
-        })
-        .catch(err => alert(JSON.stringify(err)))
+      }).catch(err => {
+        console.log(err);
+      })
+
     },
     login_fb: function ({ commit }, payload) {
-      axios.post(`${BASEURL}/users/login_fb`, {
+      axios.post(`http://localhost:3000/users/login_fb`, {
         email: payload.email,
         name: payload.name,
         id: payload.id
@@ -82,24 +86,26 @@ export default new Vuex.Store({
         .catch(err => alert(JSON.stringify(err)))
     },
     addUser: function ({ commit }, payload) {
-      axios.post(`${BASEURL}/users/addUser`, {
-        email: payload.email,
-        password: payload.password,
-        name: payload.name
-      },{
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
+
+      axios({
+        method: 'post',
+        url: 'http://localhost:3000/users/addUser',
+        data:{
+          email: payload.email,
+          password: payload.password,
+          name: payload.name
         }
+      }).then(response => {
+        console.log(response);
+      }).catch(err => {
+        console.log(err);
       })
-        .then(({data}) => {
-          console.log(data)
-        })
-        .catch(err => alert(JSON.stringify(err)))
+
     },
     get_data: function ({
       commit
     }, payload) {
-      axios.get(`${BASEURL}/todos/findByUser`, {
+      axios.get(`http://localhost:3000/todos/findByUser`, {
         headers: {
           token: payload.token
         }
@@ -116,7 +122,7 @@ export default new Vuex.Store({
     create_data: function ({
       commit
     }, payload) {
-      axios.post(`${BASEURL}/todos/createTodo`, {
+      axios.post(`http://localhost:3000/todos/createTodo`, {
         content: payload.content,
         forDate: payload.forDate,
         weather: payload.weather
@@ -134,7 +140,7 @@ export default new Vuex.Store({
     move_status: function ({
       commit
     }, payload) {
-      axios.put(`${BASEURL}/todos/updateCheckList/${payload.id}`, {
+      axios.put(`http://localhost:3000/todos/updateCheckList/${payload.id}`, {
         checklist: payload.checklist
       }, {
         headers: {
@@ -150,7 +156,7 @@ export default new Vuex.Store({
     destroy: function ({
       commit
     }, payload) {
-      axios.delete(`${BASEURL}/todos/deleteTodo/${payload.id}`, {
+      axios.delete(`http://localhost:3000/todos/deleteTodo/${payload.id}`, {
         headers: {
           token: payload.token,
           'Content-Type': 'application/x-www-form-urlencoded'
