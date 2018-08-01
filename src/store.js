@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
 Vue.use(Vuex)
-var BASEURL = 'https://35.240.138.46:3005'
+var BASEURL = 'http://35.240.209.23 '
 export default new Vuex.Store({
   state: {
     token: localStorage.getItem('token'),
